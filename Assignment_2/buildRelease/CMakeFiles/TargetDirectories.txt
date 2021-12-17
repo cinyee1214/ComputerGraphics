@@ -1,0 +1,3 @@
+/Users/cinyee/Desktop/NYU/2021Fall/2270 CG/cg-master/Assignment_2/buildRelease/CMakeFiles/rebuild_cache.dir
+/Users/cinyee/Desktop/NYU/2021Fall/2270 CG/cg-master/Assignment_2/buildRelease/CMakeFiles/edit_cache.dir
+/Users/cinyee/Desktop/NYU/2021Fall/2270 CG/cg-master/Assignment_2/buildRelease/CMakeFiles/assignment2.dir
