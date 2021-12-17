@@ -11,33 +11,62 @@ typedef std::complex<double> Point;
 typedef std::vector<Point> Polygon;
 
 double inline det(const Point &u, const Point &v) {
-	// TODO
-	return 0;
+  // x + y * i
+	return atan2(u.imag() - v.imag(), u.real() - v.real());
 }
 
 struct Compare {
-	Point p0; // Leftmost point of the poly
+	Point p0; // Bottom&Leftmost point of the poly
 	bool operator ()(const Point &p1, const Point &p2) {
-		// TODO
-		return true;
+		return det(p1, p0) < det(p2, p0);
 	}
 };
 
 bool inline salientAngle(Point &a, Point &b, Point &c) {
-	// TODO
-	return false;
+  // x + y * i
+	double area = (b.real() - a.real()) * (c.imag() - a.imag()) - (b.imag() - a.imag()) * (c.real() - a.real());
+	// area > 0, counterclockwise
+  // area < 0, clockwise
+  // area = 0, colinear
+  
+  return area <= 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 Polygon convex_hull(std::vector<Point> &points) {
 	Compare order;
-	// TODO
-	order.p0 = Point(0, 0);
+	// bottom most, left most point
+  Point bottom = points[0];
+	for(int i = 1; i < points.size(); i++){
+    // x + y * i
+		if(points[i].imag() < bottom.imag() || (points[i].imag() == bottom.imag() && points[i].real() < bottom.real())){
+			bottom = points[i];
+		}
+	}
+	order.p0 = bottom;
 	std::sort(points.begin(), points.end(), order);
+
 	Polygon hull;
-	// TODO
-	// use salientAngle(a, b, c) here
+  hull.push_back(points[0]);
+  hull.push_back(points[1]);
+  for (int i = 2; i < points.size(); ++i) {
+    Point c = points[i];
+    Point b = hull.back();
+    hull.pop_back();
+    while (hull.size() > 0 && salientAngle(hull.back(), b, c)) {
+      b = hull.back();
+      hull.pop_back();
+    }
+    hull.push_back(b);
+    hull.push_back(c);
+  }
+  Point b = hull.back();
+  hull.pop_back();
+  if (!salientAngle(hull.back(), b, bottom)) {
+    hull.push_back(b);
+  }
+
 	return hull;
 }
 
@@ -46,7 +75,16 @@ Polygon convex_hull(std::vector<Point> &points) {
 std::vector<Point> load_xyz(const std::string &filename) {
 	std::vector<Point> points;
 	std::ifstream in(filename);
-	// TODO
+	// Read each line, initialize points
+  double x, y, z;
+  std::string curLine;
+  // Skip the first line
+  std::getline(in, curLine);
+  while (std::getline(in, curLine)) {
+    std::istringstream streamLine(curLine);
+    streamLine >> x >> y >> z;
+    points.push_back(Point(x, y));
+  }
 	return points;
 }
 
